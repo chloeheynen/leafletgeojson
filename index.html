@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello Leaflet</title>
+    <title>MegaCities</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
@@ -23,49 +23,34 @@
 <body>
     <div id="map"></div>
     <script>
-        var map = L.map('map').setView([29.6436, -82.3549], 15); // Coordinates for University of Florida
+        var map = L.map('map').setView([0, 0], 2);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Add a marker for the University of Florida football stadium
-        var stadiumMarker = L.marker([29.649, -82.348]).addTo(map);
-        stadiumMarker.bindPopup("<b>University of Florida Football Stadium</b>").openPopup();
-
-        // Add a blue circle encapsulating Sorority Row
-        var sororityRowCircle = L.circle([29.644167, -82.337611], {
-            color: 'blue',
-            fillColor: 'blue',
-            fillOpacity: 0.5,
-            radius: 150 // Adjust the radius as needed
-        }).addTo(map);
-        sororityRowCircle.bindPopup("<b>Sorority Row</b>");
-
-        // Add a polygon outlining Mark Bostick Golf Course using the provided coordinates
-        var golfCoursePolygon = L.polygon([
-            [29.650278, -82.371028], // 29°39'01.0"N 82°22'19.7"W
-            [29.650333, -82.364250], // 29°39'01.2"N 82°21'51.3"W
-            [29.645028, -82.364278], // 29°38'42.1"N 82°21'51.4"W
-            [29.645028, -82.372222]  // 29°38'42.1"N 82°22'20.0"W
-        ], {
-            color: 'green',
-            fillColor: 'green',
-            fillOpacity: 0.5
-        }).addTo(map);
-        golfCoursePolygon.bindPopup("<b>Mark Bostick Golf Course</b>");
-
         var popup = L.popup();
+
+        fetch('map.geojson')
+        .then(response => response.json())
+        .then(data => {
+             L.geoJSON(data, {
+                onEachFeature: function (feature, layer) {
+                 if (feature.properties) {
+                     layer.bindPopup("City: " + feature.properties.City + "<br>Place: " + feature.properties.Place);
+                 }
+              }
+             }).addTo(map);
+         });
 
         function onMapClick(e) {
             popup
                 .setLatLng(e.latlng)
                 .setContent("You clicked the map at " + e.latlng.toString())
-                .openOn(map); 
+                .openOn(map);
         }
-            
-        map.on('click', onMapClick);
 
+        map.on('click', onMapClick);
     </script>
 </body>
 </html>
