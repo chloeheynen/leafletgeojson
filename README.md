@@ -1,5 +1,3 @@
-# helloleaflet
+# Leaflet GeoJSON
 
-following the quickstart from leaflet
-
-https://leafletjs.com/examples/quick-start/
+Creating a Leaflet of a GeoJSON I previously created.
